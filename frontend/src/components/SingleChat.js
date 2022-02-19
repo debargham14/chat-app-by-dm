@@ -11,11 +11,11 @@ import ProfileModal from "./miscellaneous/ProfileModal";
 import ScrollableChat from "./ScrollableChat";
 import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
-
+import {CheckIcon, AttachmentIcon} from '@chakra-ui/icons';
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
-const ENDPOINT = "https://chat-app-by-dm.herokuapp.com/"; 
+const ENDPOINT = "http://localhost:8080"; 
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -25,6 +25,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
+  const [imageSelected, setImageSelected] = useState("");
   const toast = useToast();
 
   const defaultOptions = {
@@ -85,6 +86,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           "/api/message",
           {
             content: newMessage,
+            isImage : false,
             chatId: selectedChat,
           },
           config
@@ -158,6 +160,43 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }, timerLength);
   };
 
+  const handleUpload = async () => {
+      socket.emit ("stop typing", selectedChat._id);
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        setNewMessage("");
+        const formdata = new FormData ();
+        formdata.append ("file", imageSelected);
+        formdata.append ("upload_preset", "debargha");
+        formdata.append ("cloud_name", "hosterr");
+        const response = await axios.post ("https://api.cloudinary.com/v1_1/hosterr/image/upload", formdata);
+        const { data } = await axios.post(
+          "/api/message",
+          {
+            content: response.data.secure_url,
+            isImage : true,
+            chatId: selectedChat,
+          },
+          config
+        );
+        socket.emit("new message", data);
+        setMessages([...messages, data]);
+      }catch (error) {
+        toast ({
+          title : "Error Occured",
+          description: "Failed to send the Message",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        })
+      }
+  }
   return (
     <>
       {selectedChat ? (
@@ -246,6 +285,23 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 value={newMessage}
                 onChange={typingHandler}
               />
+              <label htmlFor='upload-button'>
+                <span className="image-button">
+                  <AttachmentIcon className='picture-icon'/>
+                </span>
+              </label>
+              <input 
+                type="file"
+                multiple={false}
+                id="upload-button"
+                style={{ display: 'none'}}
+                onChange={(event) => {
+                  setImageSelected(event.target.files[0])
+                }}
+              />
+              <button style={{ display: "flex", justifyContent: 'flex-end'}} className='send-button' onClick={handleUpload}>
+                <CheckIcon className = 'send-icon' alignItems="right" justifyContent="right"/>
+              </button>
             </FormControl>
           </Box>
         </>

@@ -8,7 +8,7 @@ import ChatLoading from "./ChatLoading";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { Button } from "@chakra-ui/react";
 import { ChatState } from "../Context/ChatProvider";
-
+import { CameraAlt } from '@mui/icons-material';
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
 
@@ -27,6 +27,7 @@ const MyChats = ({ fetchAgain }) => {
 
       const { data } = await axios.get("/api/chat", config);
       setChats(data);
+      console.log (data);
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -90,6 +91,7 @@ const MyChats = ({ fetchAgain }) => {
         {chats ? (
           <Stack overflowY="scroll">
             {chats.map((chat) => (
+              
               <Box
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
@@ -108,9 +110,13 @@ const MyChats = ({ fetchAgain }) => {
                 {chat.latestMessage && (
                   <Text fontSize="xs">
                     <b>{chat.latestMessage.sender.name} : </b>
-                    {chat.latestMessage.content.length > 50
+                    {/* {chat.latestMessage.content.length > 50
                       ? chat.latestMessage.content.substring(0, 51) + "..."
-                      : chat.latestMessage.content}
+                      : chat.latestMessage.content} */}
+                    {chat.latestMessage.isImage == true ? <CameraAlt style = {{"vertical-align" : "bottom"}}className="photo_icon"/> : chat.latestMessage.content.length > 50
+                      ? chat.latestMessage.content.substring(0, 51) + "..."
+                      : chat.latestMessage.content 
+                    }
                   </Text>
                 )}
               </Box>

@@ -9,9 +9,22 @@ import {
 } from "../config/ChatLogics";
 import { ChatState } from "../Context/ChatProvider";
 
+const renderMessage = (m) => {
+  if (m.isImage) {
+    return (
+      <img 
+      src={m.content}
+      alt="new"
+      />
+    )
+  }
+  else {
+    return m.content;
+  }
+}
 const ScrollableChat = ({ messages }) => {
   const { user } = ChatState();
-
+  
   return (
     <ScrollableFeed>
       {messages &&
@@ -42,7 +55,7 @@ const ScrollableChat = ({ messages }) => {
                 maxWidth: "75%",
               }}
             >
-              {m.content}
+            {renderMessage(m)}
             </span>
           </div>
         ))}
