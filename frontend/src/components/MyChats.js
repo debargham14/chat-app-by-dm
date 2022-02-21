@@ -27,7 +27,6 @@ const MyChats = ({ fetchAgain }) => {
 
       const { data } = await axios.get("/api/chat", config);
       setChats(data);
-      console.log (data);
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -113,7 +112,7 @@ const MyChats = ({ fetchAgain }) => {
                     {/* {chat.latestMessage.content.length > 50
                       ? chat.latestMessage.content.substring(0, 51) + "..."
                       : chat.latestMessage.content} */}
-                    {chat.latestMessage.isImage == true ? <CameraAlt style = {{"vertical-align" : "bottom"}}className="photo_icon"/> : chat.latestMessage.content.length > 50
+                    {chat.latestMessage.isImage === true ? <CameraAlt style = {{"verticalAlign" : "bottom"}}className="photo_icon"/> : chat.latestMessage.content.length > 50
                       ? chat.latestMessage.content.substring(0, 51) + "..."
                       : chat.latestMessage.content 
                     }

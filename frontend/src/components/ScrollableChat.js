@@ -15,6 +15,8 @@ const renderMessage = (m) => {
       <img 
       src={m.content}
       alt="new"
+      height="500"
+      width="400"
       />
     )
   }
