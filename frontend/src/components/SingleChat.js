@@ -15,7 +15,7 @@ import {CheckIcon, AttachmentIcon} from '@chakra-ui/icons';
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
-const ENDPOINT = "https://chat-app-by-dm.herokuapp.com"; 
+const ENDPOINT = "http://localhost:8080"; 
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
